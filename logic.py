@@ -1,5 +1,3 @@
-import pandas as pd
-
 def calculate_monthly_payment(
     loan: float = 4_300_000.0,
     years: int = 40,
@@ -19,7 +17,6 @@ def calculate_monthly_payment(
     assert all([i > 0 for i in interest_rates_100]), "All interest rates must be greater than 0"
     assert refinance_when_principal_hit < loan, "Principal hit point must be less than the full loan amount"
 
-
     if refinance:
         assert refinance_every_x_years > 0, "refinance cycle must be greater than 0"
         assert len(interest_rates_100) >= refinance_every_x_years, "more rates than refinance cycle is needed"
@@ -33,6 +30,9 @@ def calculate_monthly_payment(
       assert topup_amount > 0, "topup amount must be greater than 0"
 
     hist = {
+        'year': [],
+        'month': [],
+        'period': [],
         'loan_start':[], 
         'interest_rate_yearly':[],
         'total':[], 
@@ -46,6 +46,7 @@ def calculate_monthly_payment(
 
     months_left = years * 12
     current_month = 0
+    period = 0
     principal_left = loan
     interest_rate_increase = 0
 
@@ -64,17 +65,19 @@ def calculate_monthly_payment(
         required_monthly_payment = (principal_left * interest_rate_monthly * nomi) / denomi
 
         for j in range(12):
+            # add month and period at the start of the loop
+            period += 1
+            current_month += 1
           
             interest = interest_rate_monthly * principal_left
             principal = required_monthly_payment - interest
             minimum_added = max(minimum_monthly_payment - required_monthly_payment, 0)
             addition_added = additional_payment
 
-            current_month += 1
+            # calculate topup
+            topup_added = 0
             if topup and current_month % topup_every_x_month == 0:
                 topup_added = topup_amount
-            else:
-                topup_added = 0
 
             # handle last payment
             if principal >= principal_left:
@@ -92,19 +95,23 @@ def calculate_monthly_payment(
             elif principal + minimum_added + addition_added + topup_added >= principal_left:
                 topup_added = principal_left - principal - minimum_added - addition_added
             
+            principal_to_deduct = principal + minimum_added + addition_added + topup_added
+            total_paid = principal_to_deduct + interest
+
+            hist['year'].append(i+1)
+            hist['month'].append(j+1)
+            hist['period'].append(period)
             hist['loan_start'].append(principal_left)
             hist['interest_rate_yearly'].append(interest_rate)
-            hist['total'].append(principal + minimum_added + addition_added + interest + topup_added)
+            hist['total'].append(total_paid)
             hist['principal'].append(principal)
             hist['interest'].append(interest)
             hist['minimum_monthly_payment'].append(minimum_added)
             hist['additional_payment'].append(addition_added)
             hist['topup'].append(topup_added)
+            hist['loan_end'].append(principal_left - principal_to_deduct)
             
-            principal_left -= (principal + minimum_added + addition_added + topup_added)
-            
-            hist['loan_end'].append(principal_left)
-
+            principal_left -= principal_to_deduct
             months_left -= 1
             
             if principal_left <= 0:

@@ -1,0 +1,61 @@
+{
+    "interest_configs": [
+        {
+            "interest_rates_100": [2.3, 2.9, 3.5, 4.495, 4.495, 5.495]
+        },
+        {
+            "interest_rates_100": [4]
+        }
+    ],
+    "payment_configs": [
+        {
+            "minimum_monthly_payment": 0,
+            "additional_payment": 0
+        },
+        {
+            "minimum_monthly_payment": 20000,
+            "additional_payment": 0
+        },
+        {
+            "minimum_monthly_payment": 15000,
+            "additional_payment": 5000
+        }
+    ],
+    "refinance_configs": [
+        {
+            "refinance": false,
+            "refinance_every_x_years": 3,
+            "refinance_when_principal_hit": 3000000,
+            "refinance_interest_will_increase": 1.0
+        },
+        {
+            "refinance": true,
+            "refinance_every_x_years": 3,
+            "refinance_when_principal_hit": 3000000,
+            "refinance_interest_will_increase": 1.0
+        },
+        {
+            "refinance": true,
+            "refinance_every_x_years": 3,
+            "refinance_when_principal_hit": 3000000,
+            "refinance_interest_will_increase": 0.5
+        }
+    ],
+    "topup_configs": [
+        {
+            "topup": false,
+            "topup_every_x_month": 12,
+            "topup_amount": 50000
+        },
+        {
+            "topup": true,
+            "topup_every_x_month": 12,
+            "topup_amount": 50000
+        },
+        {
+            "topup": true,
+            "topup_every_x_month": 12,
+            "topup_amount": 30000
+        }
+    ]
+}
