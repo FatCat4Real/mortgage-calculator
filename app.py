@@ -35,7 +35,7 @@ def create_scenario_inputs(scenario_id, shared_mode=True, shared_loan=None, shar
         inputs['additional_payment'] = st.number_input("Extra Monthly", min_value=0.0, value=0.0, key=f"add_payment_{scenario_id}")
     
     # Advanced options in columns
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)  
     with col1:
         inputs['refinance'] = st.checkbox("Refinance", key=f"refinance_{scenario_id}")
         if inputs['refinance']:
@@ -101,18 +101,19 @@ for i, scenario_id in enumerate(st.session_state.scenarios):
     with cols[i]:
         # Compact scenario header
         col1, col2 = st.columns([0.8, 0.2])
+        # col1, col2 = st.columns([0.2, 0.8])
         with col1:
             st.markdown(f"#### Scenario {scenario_id}")
         with col2:
             if len(st.session_state.scenarios) > 1:
-                if st.button("✕", key=f"remove_{scenario_id}"):
+                if st.button("✕", key=f"remove_{scenario_id}", type='secondary'):
                     st.session_state.scenarios.remove(scenario_id)
                     st.rerun()
 
         all_scenario_inputs.append(create_scenario_inputs(scenario_id, shared_mode, shared_loan, shared_years))
 
 # Compact buttons
-if st.button("➕ Add Scenario"):
+if st.button("➕ Add Scenario", type='secondary'):
     new_id = 1
     if st.session_state.scenarios:
         new_id = max(st.session_state.scenarios) + 1
