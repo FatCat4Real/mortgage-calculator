@@ -2,6 +2,13 @@ import streamlit as st
 import pandas as pd
 from logic import calculate_monthly_payment
 
+# Configure page settings - must be the first Streamlit command
+st.set_page_config(
+    page_title="Mortgage Calculator",
+    page_icon="🏠",
+    layout="wide"
+)
+
 def create_scenario_inputs(scenario_id, shared_mode=True, shared_loan=None, shared_years=None):
     inputs = {}
     
