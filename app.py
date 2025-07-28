@@ -172,9 +172,14 @@ if calculate:
         summary_df = summary_df.drop(['total_paid_raw', 'total_interest_raw', 'amortization_df'], axis=1)
         st.dataframe(summary_df, use_container_width=True, hide_index=True)
         
-        # Best scenario details
-        if len(results_data) > 1:
-            best_idx = min(range(len(results_data)), key=lambda i: results_data[i]['total_paid_raw'])
-            best_scenario = results_data[best_idx]
-            with st.expander(f"📈 Best Option Details (Scenario {best_scenario['Scenario']})"):
-                st.dataframe(best_scenario['amortization_df']) 
+        # # Best scenario details
+        # if len(results_data) > 1:
+        #     best_idx = min(range(len(results_data)), key=lambda i: results_data[i]['total_paid_raw'])
+        #     best_scenario = results_data[best_idx]
+        #     with st.expander(f"📈 Best Option Details (Scenario {best_scenario['Scenario']})"):
+        #         st.dataframe(best_scenario['amortization_df']) 
+
+        for scenario_idx in range(len(results_data)):
+            senario_selected = results_data[scenario_idx]
+            with st.expander(f"📈 Option Details (Scenario {senario_selected['Scenario']})"):
+                st.dataframe(senario_selected['amortization_df']) 
