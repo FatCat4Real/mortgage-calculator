@@ -151,7 +151,22 @@ if calculate:
                     display_str = "N/A"
                     average_per_month = 0
 
-                results_data.append({
+                # Calculate monthly payments for each year corresponding to interest rate periods
+                yearly_payments = {}
+                num_interest_rates = len(scenario_inputs['interest_rates_100'])
+                
+                for year_num in range(1, num_interest_rates + 1):
+                    year_data = df[df['year'] == year_num]
+                    if not year_data.empty:
+                        # Get the monthly payment for this year (excluding additional payments and topups)
+                        # Use the base payment (principal + interest) for the first month of the year
+                        first_month_data = year_data.iloc[0]
+                        monthly_payment = first_month_data['total'] - first_month_data['minimum_monthly_payment'] - first_month_data['additional_payment'] - first_month_data['topup']
+                        yearly_payments[f"Year {year_num} Payment"] = f"฿{monthly_payment:,.0f}"
+                    else:
+                        yearly_payments[f"Year {year_num} Payment"] = "฿0"
+
+                result_dict = {
                     "Scenario": i+1,
                     "Total Cost": f"฿{total_paid:,.0f}",
                     "Duration": display_str,
@@ -160,7 +175,11 @@ if calculate:
                     "total_paid_raw": total_paid,
                     "total_interest_raw": total_interest,
                     "amortization_df": df
-                })
+                }
+                
+                # Add yearly payment columns
+                result_dict.update(yearly_payments)
+                results_data.append(result_dict)
 
             except Exception as e:
                 st.error(f"Error in Scenario {i+1}: {e}")
@@ -169,7 +188,9 @@ if calculate:
     if results_data:
         st.subheader("📊 Results")
         summary_df = pd.DataFrame(results_data)
-        summary_df = summary_df.drop(['total_paid_raw', 'total_interest_raw', 'amortization_df'], axis=1)
+        # Keep yearly payment columns but drop the raw data columns
+        columns_to_drop = ['total_paid_raw', 'total_interest_raw', 'amortization_df']
+        summary_df = summary_df.drop(columns_to_drop, axis=1)
         st.dataframe(summary_df, use_container_width=True, hide_index=True)
         
         # # Best scenario details
